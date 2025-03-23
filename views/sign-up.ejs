@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title></title>
+  
+</head>
+<body>
+  <script>0</script>
+  <h1>Sign Up</h1>
+  <form class ="signUp" action="/register" method="POST">
+    <label for="firstname">First Name</label>
+    <input id="firstname" name="firstname" placeholder="First Name" type="text" />
+    <label for="lastname">Last Name</label>
+    <input id="lastname" name="lastname" placeholder="Last Name" type="text" />
+    <label for="email">Email</label>
+    <input id="email" name="email" placeholder="Email@something.com" type="email"/>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password"/>
+    <label for="passwordRE">Re-Enter password</label>
+    <input id="passwordRE" name="passwordRE" type="password"/>
+    <label for="admin">Enter admin password(Optional)</label>
+    <input id="admin" name="admin" type="password"/>
+    <button>Sign Up</button>
+    <a href ="/log">Already signed up? Login!</a>
+  </form>
+  <% if(errors.length > 0){ %> 
+    <% for(let error of errors) {%>
+       <h2><%=error.msg %></h2>
+    <% } %>
+  <%}%>
+</body>
+</html>
