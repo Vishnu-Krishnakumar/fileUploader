@@ -19,7 +19,7 @@ model users{
   email     String   @unique
   password  String
 }
-model Session {
+model session {
   id        String   @id
   sid       String   @unique
   data      String   

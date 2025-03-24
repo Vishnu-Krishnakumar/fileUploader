@@ -9,7 +9,7 @@ passport.use(new LocalStrategy(async (username, password, done) => {
       try {
         const user = await prisma.users.findUnique({
             where:{
-                email: {username},
+                email: username,
             }
         })
         
@@ -28,15 +28,15 @@ passport.use(new LocalStrategy(async (username, password, done) => {
 }))
 
 
-const serial = (user, done) => {
+passport.serializeUser((user, done) => {
     done(null, user.id);
-};
+});
   
-const  deserial = async (id, done) => {
+passport.deserializeUser(async(id, done) => {
   try {
     const  user  = await prisma.users.findUnique({
       where:{
-        id:{id},
+        id: id,
       }
     })
   
@@ -44,10 +44,8 @@ const  deserial = async (id, done) => {
     } catch(err) {
       done(err);
     }
-  };
+});
 
 module.exports ={
-  passport,
-  serial,
-  deserial
+  passport
 }
