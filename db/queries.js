@@ -17,7 +17,17 @@ async function createUser(user){
   })  
 }
 
+async function fileUpload(user){
+  await prisma.files.create({
+    data:{
+      file_name: user.fileName,
+      user_id: user.id,
+      folder_id: 0,
+    }
+  })
+}
 
 module.exports = {
     createUser,
+    fileUpload,
 }
