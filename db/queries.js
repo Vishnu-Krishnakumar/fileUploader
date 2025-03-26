@@ -22,12 +22,26 @@ async function fileUpload(user){
     data:{
       file_name: user.fileName,
       user_id: user.id,
-      folder_id: 0,
+      folder_id: user.folderId || null,
     }
   })
 }
 
+async function folderCreate(folder){
+  await prisma.folders.create({
+    data:{
+      folder_name: folder.folderName,
+      user_id: folder.id, 
+    }
+  })
+}
+
+async function getFolders(user){
+  
+}
 module.exports = {
     createUser,
     fileUpload,
+    folderCreate,
 }
+

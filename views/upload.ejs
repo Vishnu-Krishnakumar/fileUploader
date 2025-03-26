@@ -11,11 +11,16 @@
 </head>
 <body>
   <script>0</script>
-  <h1>Upload a file!</h1>
-
+  <h2>Upload a file!</h2>
   <form action="/upload" method = "POST" enctype="multipart/form-data">
     <input type="file" id="myFile" name="uploaded_file">
     <input type="submit">
+  </form>
+
+  <h2>Create a folder!</h2>
+  <form action="/createFolder" method = "POST">
+    <input type="text" id="folderName" placeholder ="Enter a folder name!" name="folderName">
+    <button>Sign Up</button>
   </form>
 
 </body>
