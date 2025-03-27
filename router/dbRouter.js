@@ -21,9 +21,9 @@ dbRouters.get("/",(req,res)=> {res.render("sign-up",{
     errors:[]
 })});
 
-dbRouters.get("/upload",(req,res)=>{
-    res.render("upload")
-});
+// dbRouters.get("/upload",(req,res)=>{
+//     res.render("upload")
+// });
 
 dbRouters.get("/log",(req,res)=>{res.render("log-in")})
 
@@ -37,9 +37,7 @@ dbRouters.get("/log-out",(req,res,next)=>{
 ///////////////////////////////////////////post//////////////////////////////////
 dbRouters.post("/register",validation.validateUser,dbController.userRegistration)
 
-dbRouters.post("/logIn",auth.passport.authenticate('local',{failureRedirect:"/log"}),(req,res)=>{
-    res.render("upload")
-});
+dbRouters.post("/logIn",auth.passport.authenticate('local',{failureRedirect:"/log"}),dbController.logIn);
 
 dbRouters.post("/upload",upload.single("uploaded_file"),dbController.fileUpload);
 

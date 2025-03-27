@@ -20,8 +20,31 @@
   <h2>Create a folder!</h2>
   <form action="/createFolder" method = "POST">
     <input type="text" id="folderName" placeholder ="Enter a folder name!" name="folderName">
-    <button>Sign Up</button>
+    <input type = "submit">
   </form>
 
+  <% if(files) { %>
+    <h2> Your current files </h2>
+      <ul class = files>     
+      <% for(file of files){ %>  
+        <li><%= file.file_name %> </li> 
+      <% } %>
+      </ul>
+ <% } %>
+
+
+  <% if(folders) { %>
+     <h2> Your current folders </h2>
+     <% for(folder of folders){ %>
+        <div class = "folder">
+          <h3> <%= folder.folder_name %> !!</h3>
+          <ul class = files>
+            <% for (file in folder.files){ %>
+              <li><%= file.file_name %> </li>   
+            <% } %>
+          </ul>
+        </div>
+      <% } %>
+  <% } %>
 </body>
 </html>

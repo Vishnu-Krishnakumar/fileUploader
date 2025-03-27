@@ -35,13 +35,42 @@ async function folderCreate(folder){
     }
   })
 }
+async function findFolder(folder){
+  const folderFind = await prisma.folders.findFirst({
+    where:{
+      folder_name: folder.folderName,
+      user_id: folder.id,
+    }
+  })
+  return folderFind;
+}
+
+async function getFiles(user){
+  const files = await prisma.files.findMany({
+    where:{
+      user_id: user.id,
+    }
+  })
+  return files;
+}
 
 async function getFolders(user){
-  
+  const folders = await prisma.folders.findMany({
+    where:{
+      user_id:user.id,
+    },
+    include:{
+      files:true,
+    }
+  })
+  return folders;
 }
 module.exports = {
     createUser,
     fileUpload,
     folderCreate,
+    getFolders,
+    findFolder,
+    getFiles,
 }
 

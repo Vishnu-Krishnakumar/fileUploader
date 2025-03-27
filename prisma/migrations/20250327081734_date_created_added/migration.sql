@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "files" ADD COLUMN     "date_created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

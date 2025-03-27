@@ -3,7 +3,6 @@ const dbRouters = Router();
 const validation = require("../validate/validation");
 const { body, validationResult } = require("express-validator");
 const auth = require("../authenticate/auth");
-const fs = require("fs");
 const bcrypt  = require("bcryptjs");
 const db = require("../db/queries");
 const multer  = require('multer')
@@ -18,6 +17,22 @@ const storage = multer.diskStorage({
   }
 })
 const upload = multer({ storage: storage })
+////////////////////////////Router Functions////////////////////////////
+async function logIn(req,res){
+  const user = {
+    id: req.user.id,
+  }
+  console.log(user);
+  const folders = await db.getFolders(user);
+  const files = await db.getFiles(user);
+  console.log(folders);
+  console.log(files);
+  res.render("upload",{
+    folders:folders,
+    files:files,
+  });
+
+}
 
 async function userRegistration(req, res){
   const errors = validationResult(req);
@@ -46,15 +61,19 @@ async function userRegistration(req, res){
 }
 
 async function fileUpload(req,res){
-  console.log(req.file)
-  console.log(req.user.folderId)
-  res.render("upload");
+  console.log(req.file);
   const user = {
     fileName: req.file.filename,
     id: req.user.id,
-    folderId: req.user.folderId,
+    folderId: req.user.folderId || null,
   }
   db.fileUpload(user);
+  const folders = await db.getFolders(user);
+  const files = await db.getFiles(user);
+  res.render("upload",{
+    folders:folders,
+    files:files,
+  });
 }
 
 async function folderCreation(req,res){
@@ -63,25 +82,32 @@ async function folderCreation(req,res){
     folderName : folderName,
     id : req.user.id,
   }
-  fs.access(`./upload/${folderName}`,(error)=>{
-    if(error){
-      fs.mkdir(`./upload/${folderName}`,(error)=>{
-        if(error){
-          console.log(error)
-        }else{
-          db.folderCreate(folder);
-          console.log("New Directory Created");
-        }
-      })
-    }else{
-      console.log("Directory already exists");
-     }
-  })
-  res.redirect("/upload");
+  const user = {
+    id: req.user.id,
+    olderId: req.user.folderId,
+  }
+  const found = await db.findFolder(folder);
+
+  if(found){
+    console.log("A folder with this name and user is already made");
+  }
+
+  else{
+    await db.folderCreate(folder);
+    console.log("New Folder created");
+  }
+
+  const folders = await db.getFolders(user);
+  const files = await db.getFiles(user);
+  res.render("upload",{
+    folders:folders,
+    files:files,
+  });
 }
 
 module.exports ={
     userRegistration,
     fileUpload,
     folderCreation,
+    logIn,
 }
