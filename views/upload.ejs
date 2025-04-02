@@ -54,6 +54,7 @@
     <% if(folderName) {%>
     <li>Folder: <%= folderName %></li>
     <% } %>
+    <li>Size: <%= fileFound.size / 1000000 %> MB</li>
     <li>Date Created: <%= fileFound.date_created %></li>
    </ul>
  <% } %>

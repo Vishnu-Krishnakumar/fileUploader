@@ -30,7 +30,8 @@ async function logIn(req,res){
   res.render("upload",{
     folders:folders,
     files:files,
-    file: null,
+    fileFound : null,
+    folderName: null,
   });
 
 }
@@ -67,13 +68,18 @@ async function fileUpload(req,res){
     fileName: req.file.filename,
     id: req.user.id,
     folderId: req.user.folderId || null,
+    size: req.file.size,
+    url : null,
   }
-  db.fileUpload(user);
+  await db.fileUpload(user);
   const folders = await db.getFolders(user);
   const files = await db.getFiles(user);
+
   res.render("upload",{
     folders:folders,
     files:files,
+    fileFound : null,
+    folderName: null,
   });
 }
 
@@ -104,6 +110,8 @@ async function folderCreation(req,res){
   res.render("upload",{
     folders:folders,
     files:files,
+    fileFound : null,
+    folderName: null,
   });
 }
 

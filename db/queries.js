@@ -21,8 +21,10 @@ async function fileUpload(user){
   await prisma.files.create({
     data:{
       file_name: user.fileName,
-      user_id: user.id,
+      user_id: parseInt(user.id),
       folder_id: user.folderId || null,
+      url: user.url,
+      size: user.size
     }
   })
 }
@@ -36,6 +38,7 @@ async function folderCreate(folder){
   })
 
 }
+
 async function findFolder(folder){
   const folderFind = await prisma.folders.findFirst({
     where:{
