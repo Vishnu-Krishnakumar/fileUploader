@@ -43,4 +43,10 @@ dbRouters.post("/upload",upload.single("uploaded_file"),dbController.fileUpload)
 
 dbRouters.post("/createFolder",dbController.folderCreation);
 
+dbRouters.post("/sendToFolder",dbController.sendToFolder);
+
+dbRouters.post("/deleteFromFolder",dbController.deleteFileFromFolder);
+
+dbRouters.post("/deleteFile", dbController.deleteFile);
+
 module.exports = dbRouters

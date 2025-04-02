@@ -34,6 +34,7 @@ async function folderCreate(folder){
       user_id: folder.id, 
     }
   })
+
 }
 async function findFolder(folder){
   const folderFind = await prisma.folders.findFirst({
@@ -44,6 +45,7 @@ async function findFolder(folder){
   })
   return folderFind;
 }
+
 
 async function getFiles(user){
   const files = await prisma.files.findMany({
@@ -65,6 +67,55 @@ async function getFolders(user){
   })
   return folders;
 }
+
+async function addToFolder(id){
+  const updateUser = await prisma.files.update({
+    where:{
+      id: parseInt(id.file),
+      user_id: id.user,
+    },
+    data:{
+      folder_id: parseInt(id.folder),
+    },
+  })
+}
+async function deleteFile(id){
+  console.log(id);
+  const deleteFile = await prisma.files.delete({
+    where:{
+      id:(parseInt(id.file)),
+      user_id: id.user,
+    },
+  });
+
+}
+
+async function deleteFromFolder(id){
+ 
+  let folder = await prisma.folders.findFirst({
+    where:{
+      id:(parseInt(id.folder)),
+      user_id: id.user,
+    },
+    include:{
+      files:true,
+    }
+  })
+  let foundFiles = folder.files;
+  let removedFiles = foundFiles.filter((file)=> file.id !== parseInt(id.file))
+  let folderUpdate = await prisma.folders.update({
+    where:{
+      id:(parseInt(id.folder)),
+      user_id: id.user,
+    },
+    data:{
+      files:{
+        set: removedFiles,
+      }
+    },
+  })
+  return folderUpdate;
+}
 module.exports = {
     createUser,
     fileUpload,
@@ -72,5 +123,8 @@ module.exports = {
     getFolders,
     findFolder,
     getFiles,
+    addToFolder,
+    deleteFile,
+    deleteFromFolder,
 }
 

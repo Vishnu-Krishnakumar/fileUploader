@@ -27,7 +27,22 @@
     <h2> Your current files </h2>
       <ul class = files>     
       <% for(file of files){ %>  
-        <li><%= file.file_name %> </li> 
+        <li><%= file.file_name %> 
+          <form action ="/sendToFolder" method ="POST">
+            <input type ="hidden" name = "file_id" value = <%= file.id %> >
+            <label for = "folders">Select a folder to send to.</label>
+            <select name = "folders" id = folders>
+              <% for(folder of folders) { %>
+                <option value = <%= folder.id %>> <%= folder.folder_name %> </option>
+              <% }%>
+            </select>
+            <input type="submit" value="Send to folder">
+          </form>
+          <form action = "/deleteFile" method ="POST"> 
+            <input type = "hidden" name = "file_id" value = <%= file.id %> >
+            <input type="submit" value= "delete">
+          </form>
+        </li> 
       <% } %>
       </ul>
  <% } %>
@@ -39,12 +54,19 @@
         <div class = "folder">
           <h3> <%= folder.folder_name %> !!</h3>
           <ul class = files>
-            <% for (file in folder.files){ %>
-              <li><%= file.file_name %> </li>   
+            <% for (file of folder.files){ %>
+              <li> <%= file.file_name %> 
+                <form action = "/deleteFromFolder" method ="POST" > 
+                  <input type = "hidden" name = "file_id" value = <%= file.id %> >
+                  <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
+                  <input type="submit" value= "delete">
+                </form>
+              </li>   
             <% } %>
           </ul>
         </div>
       <% } %>
   <% } %>
+
 </body>
 </html>

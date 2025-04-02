@@ -17,7 +17,9 @@ const storage = multer.diskStorage({
   }
 })
 const upload = multer({ storage: storage })
+
 ////////////////////////////Router Functions////////////////////////////
+
 async function logIn(req,res){
   const user = {
     id: req.user.id,
@@ -99,15 +101,51 @@ async function folderCreation(req,res){
 
   const folders = await db.getFolders(user);
   const files = await db.getFiles(user);
+  
   res.render("upload",{
     folders:folders,
     files:files,
   });
 }
 
+async function sendToFolder(req,res){
+  console.log(req.body);
+  console.log(req.user);
+  const id = {
+    file: req.body.file_id,
+    folder: req.body.folders,
+    user: req.user.id,
+  }
+
+  await db.addToFolder(id);
+  await logIn(req,res)
+}
+
+async function deleteFileFromFolder(req,res){
+  const id = {
+    file: req.body.file_id,
+    folder: req.body.folder_id,
+    user: req.user.id,
+  }
+  await db.deleteFromFolder(id);
+  await logIn(req,res)
+}
+
+async function deleteFile(req,res){
+  const id = {
+    file: req.body.file_id,
+    folder: req.body.folder_id,
+    user: req.user.id,
+  }
+  await db.deleteFile(id);
+  await logIn(req,res)
+}
 module.exports ={
     userRegistration,
     fileUpload,
     folderCreation,
     logIn,
+    sendToFolder,
+    deleteFile,
+    deleteFileFromFolder,
 }
