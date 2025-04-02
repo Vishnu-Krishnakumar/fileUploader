@@ -34,6 +34,8 @@ dbRouters.get("/log-out",(req,res,next)=>{
     res.redirect("/");
 })
 
+dbRouters.get("/viewFile", dbController.viewFile);
+
 ///////////////////////////////////////////post//////////////////////////////////
 dbRouters.post("/register",validation.validateUser,dbController.userRegistration)
 

@@ -14,14 +14,10 @@
   <h2>Upload a file!</h2>
   <form action="/upload" method = "POST" enctype="multipart/form-data">
     <input type="file" id="myFile" name="uploaded_file">
-    <input type="submit">
+    <input type="submit" value = "Submit File">
   </form>
 
-  <h2>Create a folder!</h2>
-  <form action="/createFolder" method = "POST">
-    <input type="text" id="folderName" placeholder ="Enter a folder name!" name="folderName">
-    <input type = "submit">
-  </form>
+
 
   <% if(files) { %>
     <h2> Your current files </h2>
@@ -42,11 +38,31 @@
             <input type = "hidden" name = "file_id" value = <%= file.id %> >
             <input type="submit" value= "delete">
           </form>
+          <form action = "/viewFile" method ="get"> 
+            <input type = "hidden" name = "file_id" value = <%= file.id %> >
+            <input type="submit" value= "view">
+          </form>
         </li> 
       <% } %>
       </ul>
  <% } %>
 
+ <% if(fileFound) { %>
+   <h2>Selected File</h2>
+   <ul>
+    <li>File Name: <%= fileFound.file_name %> </li>
+    <% if(folderName) {%>
+    <li>Folder: <%= folderName %></li>
+    <% } %>
+    <li>Date Created: <%= fileFound.date_created %></li>
+   </ul>
+ <% } %>
+
+ <h2>Create a folder!</h2>
+ <form action="/createFolder" method = "POST">
+   <input type="text" id="folderName" placeholder ="Enter a folder name!" name="folderName">
+   <input type = "submit" value ="Create Folder">
+ </form>
 
   <% if(folders) { %>
      <h2> Your current folders </h2>

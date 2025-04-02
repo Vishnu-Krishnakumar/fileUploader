@@ -46,7 +46,16 @@ async function findFolder(folder){
   return folderFind;
 }
 
-
+async function findFolderName(folder){
+  if(folder.id === null) return null;
+  const folderFound = await prisma.folders.findFirst({
+    where:{
+      id: folder.id,
+      user_id: folder.user,
+    }
+  })
+  return folderFound;
+}
 async function getFiles(user){
   const files = await prisma.files.findMany({
     where:{
@@ -116,6 +125,16 @@ async function deleteFromFolder(id){
   })
   return folderUpdate;
 }
+
+async function viewFile(id){
+  let file = await prisma.files.findFirst({
+    where:{
+      id:(parseInt(id.file)),
+      user_id: id.user,
+    }
+  })
+  return file;
+}
 module.exports = {
     createUser,
     fileUpload,
@@ -126,5 +145,7 @@ module.exports = {
     addToFolder,
     deleteFile,
     deleteFromFolder,
+    viewFile,
+    findFolderName,
 }
 

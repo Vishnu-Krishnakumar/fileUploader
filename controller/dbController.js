@@ -24,14 +24,13 @@ async function logIn(req,res){
   const user = {
     id: req.user.id,
   }
-  console.log(user);
   const folders = await db.getFolders(user);
   const files = await db.getFiles(user);
-  console.log(folders);
-  console.log(files);
+
   res.render("upload",{
     folders:folders,
     files:files,
+    file: null,
   });
 
 }
@@ -63,7 +62,7 @@ async function userRegistration(req, res){
 }
 
 async function fileUpload(req,res){
-  console.log(req.file);
+
   const user = {
     fileName: req.file.filename,
     id: req.user.id,
@@ -109,8 +108,7 @@ async function folderCreation(req,res){
 }
 
 async function sendToFolder(req,res){
-  console.log(req.body);
-  console.log(req.user);
+
   const id = {
     file: req.body.file_id,
     folder: req.body.folders,
@@ -140,6 +138,35 @@ async function deleteFile(req,res){
   await db.deleteFile(id);
   await logIn(req,res)
 }
+
+async function viewFile (req,res){
+  const id = {
+    file: req.query.file_id,
+    folder: req.body.folder_id,
+    user: req.user.id,
+  }
+  const user = {
+    id: req.user.id,
+  }
+ 
+  const file = await db.viewFile(id);
+
+  const folderSearch = {
+    id: file.folder_id,
+    user: file.user_id,
+  }
+  const folders = await db.getFolders(user);
+  const files = await db.getFiles(user);
+  const foundFolder = await db.findFolderName(folderSearch);
+
+  res.render("upload",{
+    folders:folders,
+    files:files,
+    fileFound : file || null,
+    folderName: foundFolder ? foundFolder.folder_name : null,
+  })
+}
+
 module.exports ={
     userRegistration,
     fileUpload,
@@ -148,4 +175,5 @@ module.exports ={
     sendToFolder,
     deleteFile,
     deleteFileFromFolder,
+    viewFile,
 }
