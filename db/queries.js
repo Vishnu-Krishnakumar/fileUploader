@@ -18,7 +18,7 @@ async function createUser(user){
 }
 
 async function fileUpload(user){
-  await prisma.files.create({
+ const upload =  await prisma.files.create({
     data:{
       file_name: user.fileName,
       user_id: parseInt(user.id),
@@ -27,6 +27,7 @@ async function fileUpload(user){
       size: user.size
     }
   })
+  return upload;
 }
 
 async function folderCreate(folder){
@@ -49,16 +50,28 @@ async function findFolder(folder){
   return folderFind;
 }
 
-async function findFolderName(folder){
-  if(folder.id === null) return null;
+async function findFolderName(id){
+  if(id.folder === null) return null;
   const folderFound = await prisma.folders.findFirst({
     where:{
-      id: folder.id,
-      user_id: folder.user,
+      id: parseInt(id.folder),
+      user_id: id.user,
     }
   })
   return folderFound;
 }
+
+async function getFolderFiles(id){
+  if(id.folder === null) return null;
+  const files = await prisma.files.findMany({
+    where:{
+      user_id: parseInt(id.user),
+      folder_id: parseInt(id.folder), 
+    }
+  })
+  return files;
+}
+
 async function getFiles(user){
   const files = await prisma.files.findMany({
     where:{
@@ -91,6 +104,7 @@ async function addToFolder(id){
     },
   })
 }
+
 async function deleteFile(id){
   console.log(id);
   const deleteFile = await prisma.files.delete({
@@ -138,6 +152,7 @@ async function viewFile(id){
   })
   return file;
 }
+
 module.exports = {
     createUser,
     fileUpload,
@@ -150,5 +165,6 @@ module.exports = {
     deleteFromFolder,
     viewFile,
     findFolderName,
+    getFolderFiles,
 }
 

@@ -69,7 +69,13 @@
      <h2> Your current folders </h2>
      <% for(folder of folders){ %>
         <div class = "folder">
+          <div>
           <h3> <%= folder.folder_name %> !!</h3>
+          <form action = "/viewFolder" method ="get"> 
+            <input type = "hidden" name = "folder_id" value = <%=folder.id  %> >
+            <input type="submit" value= "View Folder">
+          </form>
+          </div>
           <ul class = files>
             <% for (file of folder.files){ %>
               <li> <%= file.file_name %> 

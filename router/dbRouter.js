@@ -36,6 +36,8 @@ dbRouters.get("/log-out",(req,res,next)=>{
 
 dbRouters.get("/viewFile", dbController.viewFile);
 
+dbRouters.get("/viewFolder",dbController.viewFolder);
+
 ///////////////////////////////////////////post//////////////////////////////////
 dbRouters.post("/register",validation.validateUser,dbController.userRegistration)
 
@@ -51,4 +53,7 @@ dbRouters.post("/deleteFromFolder",dbController.deleteFileFromFolder);
 
 dbRouters.post("/deleteFile", dbController.deleteFile);
 
+dbRouters.post("/uploadInFolder",upload.single("uploaded_file"),dbController.sendToThisFolder);
+
+dbRouters.post("/deleteInFolder",dbController.deleteInFolder)
 module.exports = dbRouters

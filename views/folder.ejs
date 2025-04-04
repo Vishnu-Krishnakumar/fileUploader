@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" href="/styles.css" />
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title></title>
+  
+</head>
+<body>
+
+  <script>0</script>
+  <h2>Folder: <%= folder.folder_name %></h2>
+    <form action="/uploadInFolder" method = "POST" enctype= "multipart/form-data">
+      <input type="file" id= "myFile" name= "uploaded_file" required>
+      <input type = "hidden" name = "folders" value = <%= folder.id %> >
+      <input type="submit" value = "Submit File">
+    </form>
+  <% if(files) { %>
+    <h2> Your current files </h2>          
+      <% for(file of files){ %>
+      <ul class = files>   
+        <li>File Name: <%= file.file_name %> 
+        <li>File Size: <%= file.size / 1000000 %> MB</li>
+        <li>Date Created: <%=file.date_created %></li>
+        <li>URL : <%= file.url %> </li> 
+          <form action = "/deleteInFolder" method ="POST"> 
+            <input type = "hidden" name = "file_id" value = <%= file.id %> >
+            <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
+            <input type="submit" value= "delete">
+          </form>
+        </li>
+      </ul>  
+  <% } %>
+
+  <% } %>
+</body>
+</html>
