@@ -38,6 +38,7 @@ dbRouters.get("/viewFile", dbController.viewFile);
 
 dbRouters.get("/viewFolder",dbController.viewFolder);
 
+dbRouters.get("/download",dbController.downloadFile);
 ///////////////////////////////////////////post//////////////////////////////////
 dbRouters.post("/register",validation.validateUser,dbController.userRegistration)
 

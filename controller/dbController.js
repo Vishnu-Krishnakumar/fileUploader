@@ -26,7 +26,7 @@ async function logIn(req,res){
   }
   const folders = await db.getFolders(user);
   const files = await db.getFiles(user);
-  
+
   res.render("upload",{
     folders:folders,
     files:files,
@@ -134,8 +134,7 @@ async function sendToThisFolder(req,res){
     size: req.file.size,
     url : null,
   }
-  console.log("SendToFolder function used!");
-  console.log(file);
+
 
   const upload = await db.fileUpload(file);
   
@@ -207,7 +206,7 @@ async function viewFile (req,res){
   }
  
   const file = await db.viewFile(id);
-  console.log(file);
+
   const folderSearch = {
     folder: file.folder_id,
     user: file.user_id,
@@ -242,6 +241,11 @@ async function viewFolder (req,res){
   })
 }
 
+async function downloadFile(req,res){
+  var file = "/home/vishnu/odin/nodeJS/fileUploader/upload/"+req.query.file_name;
+
+  res.download(file);
+}
 
 module.exports ={
     userRegistration,
@@ -255,4 +259,5 @@ module.exports ={
     viewFolder,
     sendToThisFolder,
     deleteInFolder,
+    downloadFile,
 }

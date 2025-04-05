@@ -42,6 +42,10 @@
             <input type = "hidden" name = "file_id" value = <%= file.id %> >
             <input type="submit" value= "view">
           </form>
+          <form action = "/download" method ="get"> 
+            <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
+            <input type="submit" value= "download">
+          </form>
         </li> 
       <% } %>
       </ul>
@@ -83,6 +87,14 @@
                   <input type = "hidden" name = "file_id" value = <%= file.id %> >
                   <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
                   <input type="submit" value= "delete">
+                </form>
+                <form action = "/viewFile" method ="get"> 
+                  <input type = "hidden" name = "file_id" value = <%= file.id %> >
+                  <input type="submit" value= "view">
+                </form>
+                <form action = "/download" method ="get"> 
+                  <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
+                  <input type="submit" value= "download">
                 </form>
               </li>   
             <% } %>
