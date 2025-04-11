@@ -1,9 +1,13 @@
+require("dotenv").config();
 const {Router} = require("express");
 const dbRouters = Router();
 const validation = require("../validate/validation");
 const { body, validationResult } = require("express-validator");
 const auth = require("../authenticate/auth");
 const bcrypt  = require("bcryptjs");
+const { createClient } = require("@supabase/supabase-js");
+const {NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY} = process.env;
+const supabase = createClient(NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY);
 const db = require("../db/queries");
 const multer  = require('multer')
 const storage = multer.diskStorage({
@@ -63,13 +67,24 @@ async function userRegistration(req, res){
 }
 
 async function fileUpload(req,res){
+  console.log(req);
+  const {data,error} = await supabase.storage.from('all-files').upload(req.file.filename,req.file)
   const user = {
     fileName: req.file.filename,
     id: req.user.id,
     folderId: req.user.folderId || null,
     size: req.file.size,
     url : null,
+  };
+
+  if(error){
+    console.log(error);
   }
+  else {
+    console.log("file uploaded sucessfully");
+    console.log(data);
+  }
+  
   console.log(user);
   await db.fileUpload(user);
 
@@ -194,7 +209,6 @@ async function deleteFile(req,res){
 }
 
 async function viewFile (req,res){
-
   const id = {
     file: req.query.file_id,
     folder: req.body.folder_id,
@@ -211,12 +225,14 @@ async function viewFile (req,res){
     folder: file.folder_id,
     user: file.user_id,
   }
+
   console.log(folderSearch);
+
   const folders = await db.getFolders(user);
   const files = await db.getFiles(user);
   const foundFolder = await db.findFolderName(folderSearch);
 
-  res.render("upload",{
+  await res.render("upload",{
     folders:folders,
     files:files,
     fileFound : file || null,
