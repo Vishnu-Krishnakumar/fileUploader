@@ -9,18 +9,6 @@ const { createClient } = require("@supabase/supabase-js");
 const {NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY} = process.env;
 const supabase = createClient(NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY);
 const db = require("../db/queries");
-const multer  = require('multer')
-const storage = multer.diskStorage({
-  destination : function (req,file,cb){
-    cb(null,'./upload')
-  },
-  filename: function (req,file,cb){
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const fileParts = file.originalname.split('.');
-    cb(null,`${fileParts[0]}-${uniqueSuffix}.${fileParts[1]}`)
-  }
-})
-const upload = multer({ storage: storage })
 
 ////////////////////////////Router Functions////////////////////////////
 
@@ -67,36 +55,43 @@ async function userRegistration(req, res){
 }
 
 async function fileUpload(req,res){
-  console.log(req);
-  const {data,error} = await supabase.storage.from('all-files').upload(req.file.filename,req.file)
-  const user = {
-    fileName: req.file.filename,
-    id: req.user.id,
-    folderId: req.user.folderId || null,
-    size: req.file.size,
-    url : null,
-  };
-
+  console.log("test")
+  console.log(req.file);
+  const {data,error} = await supabase.storage.from('all-files').upload(req.file.originalname,req.file.buffer,{contentType: req.file.mimetype,});
   if(error){
     console.log(error);
-  }
-  else {
+  }else {
     console.log("file uploaded sucessfully");
     console.log(data);
   }
-  
-  console.log(user);
-  await db.fileUpload(user);
 
-  const folders = await db.getFolders(user);
-  const files = await db.getFiles(user);
+  const {data:urlText, error:urlError} = await supabase.storage.from('all-files').createSignedUrl(data.path,60*60*24,{ download: true });
+  if(urlError){
+    console.log(urlError)
+  }else{
+    console.log("File url retrieved properly!");
+    console.log(urlText);
+    const user = {
+      fileName: req.file.originalname,
+      id: req.user.id,
+      folderId: req.user.folderId || null,
+      size: req.file.size,
+      url : urlText.signedUrl,
+    };
+    console.log(user);
+    await db.fileUpload(user);
 
-  res.render("upload",{
-    folders:folders,
-    files:files,
-    fileFound : null,
-    folderName: null,
-  });
+    const folders = await db.getFolders(user);
+    const files = await db.getFiles(user);
+
+    res.render("upload",{
+      folders:folders,
+      files:files,
+      fileFound : null,
+      folderName: null,
+    });
+    res.end();
+  }
 }
 
 async function folderCreation(req,res){
