@@ -50,7 +50,7 @@ dbRouters.post("/createFolder",dbController.folderCreation);
 
 dbRouters.post("/sendToFolder",dbController.sendToFolder);
 
-dbRouters.post("/deleteFromFolder",dbController.deleteFileFromFolder);
+dbRouters.post("/removeFromFolder",dbController.removeFileFromFolder);
 
 dbRouters.post("/deleteFile", dbController.deleteFile);
 

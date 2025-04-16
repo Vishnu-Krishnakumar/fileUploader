@@ -36,6 +36,7 @@
           </form>
           <form action = "/deleteFile" method ="POST"> 
             <input type = "hidden" name = "file_id" value = <%= file.id %> >
+            <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
             <input type="submit" value= "delete">
           </form>
           <form action = "/viewFile" method ="get"> 
@@ -83,10 +84,10 @@
           <ul class = files>
             <% for (file of folder.files){ %>
               <li> <%= file.file_name %> 
-                <form action = "/deleteFromFolder" method ="POST" > 
+                <form action = "/removeFromFolder" method ="POST" > 
                   <input type = "hidden" name = "file_id" value = <%= file.id %> >
                   <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
-                  <input type="submit" value= "delete">
+                  <input type="submit" value= "remove">
                 </form>
                 <form action = "/viewFile" method ="get"> 
                   <input type = "hidden" name = "file_id" value = <%= file.id %> >

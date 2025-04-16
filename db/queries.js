@@ -117,7 +117,6 @@ async function deleteFile(id){
 }
 
 async function deleteFromFolder(id){
- 
   let folder = await prisma.folders.findFirst({
     where:{
       id:(parseInt(id.folder)),
@@ -141,6 +140,7 @@ async function deleteFromFolder(id){
     },
   })
   return folderUpdate;
+  
 }
 
 async function viewFile(id){

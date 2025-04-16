@@ -9,7 +9,8 @@ const { createClient } = require("@supabase/supabase-js");
 const {NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY} = process.env;
 const supabase = createClient(NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY);
 const db = require("../db/queries");
-
+const path = require('path');
+const {v4: uuidv4} = require('uuid');
 ////////////////////////////Router Functions////////////////////////////
 
 async function logIn(req,res){
@@ -55,30 +56,44 @@ async function userRegistration(req, res){
 }
 
 async function fileUpload(req,res){
-  console.log("test")
-  console.log(req.file);
-  const {data,error} = await supabase.storage.from('all-files').upload(req.file.originalname,req.file.buffer,{contentType: req.file.mimetype,});
+  let fileName = req.file.originalname;
+  console.log(fileName);
+  const {data : fileSearch, error:searchError} = await  supabase.storage.from("all-files").list("",{
+    limit:100,
+    offset:0,
+    sortBy: { column: 'name', order: 'asc' },
+    search: fileName[0],
+  })
+  if(searchError){
+    console.log(searchError)
+  }
+  if(fileSearch === null || fileSearch.length != 0 ){
+   fileName = req.file.originalname.split(".");
+   fileName = fileName[0] + "-" + (fileSearch.length + 1) + "." + fileName[1];
+  }
+
+  let {data,error} = await supabase.storage.from('all-files').upload(fileName,req.file.buffer,{contentType: req.file.mimetype,});
   if(error){
     console.log(error);
   }else {
     console.log("file uploaded sucessfully");
-    console.log(data);
   }
 
   const {data:urlText, error:urlError} = await supabase.storage.from('all-files').createSignedUrl(data.path,60*60*24,{ download: true });
+
   if(urlError){
     console.log(urlError)
   }else{
     console.log("File url retrieved properly!");
     console.log(urlText);
     const user = {
-      fileName: req.file.originalname,
+      fileName: fileName,
       id: req.user.id,
       folderId: req.user.folderId || null,
       size: req.file.size,
       url : urlText.signedUrl,
     };
-    console.log(user);
+    
     await db.fileUpload(user);
 
     const folders = await db.getFolders(user);
@@ -164,14 +179,17 @@ async function sendToThisFolder(req,res){
   })
 }
 
-async function deleteFileFromFolder(req,res){
+async function removeFileFromFolder(req,res){
+
   const id = {
     file: req.body.file_id,
     folder: req.body.folder_id,
     user: req.user.id,
   }
+
   await db.deleteFromFolder(id);
   await logIn(req,res)
+
 }
 
 async function deleteInFolder(req,res){
@@ -194,6 +212,11 @@ async function deleteInFolder(req,res){
 }
 
 async function deleteFile(req,res){
+  console.log(req.body);
+  console.log(req.body.file_name)
+  const { data , error } = await supabase.storage.from("all-files").remove([req.body.file_name]);
+  if(error){console.log(error)}
+  else{console.log(data)};
   const id = {
     file: req.body.file_id,
     folder: req.body.folder_id,
@@ -265,7 +288,7 @@ module.exports ={
     logIn,
     sendToFolder,
     deleteFile,
-    deleteFileFromFolder,
+    removeFileFromFolder,
     viewFile,
     viewFolder,
     sendToThisFolder,
