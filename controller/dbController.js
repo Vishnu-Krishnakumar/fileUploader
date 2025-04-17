@@ -276,9 +276,30 @@ async function viewFolder (req,res){
 }
 
 async function downloadFile(req,res){
-  var file = "/home/vishnu/odin/nodeJS/fileUploader/upload/"+req.query.file_name;
+  const search = {
+    user: req.user.id,
+    file: req.query.file_id,
+  }
+  const validate = await db.viewFile(search)
+  if(validate){
+    let fileName = validate.file_name;
+    const { data, error } = await supabase
+     .storage
+     .from('all-files')
+     .download(fileName)
+     if(error){
+      console.log(error)
+     }else{
 
-  res.download(file);
+      const arrayBuffer = await data.arrayBuffer(); 
+      const buffer = Buffer.from(arrayBuffer);     
+      
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.setHeader('Content-Type', data.type || 'application/octet-stream');
+      res.send(buffer);
+     }
+  }  
+  
 }
 
 module.exports ={

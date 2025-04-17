@@ -45,6 +45,7 @@
           </form>
           <form action = "/download" method ="get"> 
             <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
+            <input type = "hidden" name = "file_id" value = <%= file.id %> >
             <input type="submit" value= "download">
           </form>
         </li> 
