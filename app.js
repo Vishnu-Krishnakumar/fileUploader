@@ -4,7 +4,6 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('@prisma/client');
 const app = express();
 const pool = require("./db/pool");
-// const pgSession = require('connect-pg-simple')(session);
 const dbRouters = require("./router/dbRouter.js");
 const { body, validationResult } = require("express-validator");
 const auth = require("./authenticate/auth.js");

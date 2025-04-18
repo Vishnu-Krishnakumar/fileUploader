@@ -10,18 +10,65 @@
   
 </head>
 <body>
-  <script>0</script>
-  <h2>Upload a file!</h2>
-  <form action="/upload" method = "POST" enctype="multipart/form-data">
-    <input type="file" id="myFile" name="uploaded_file">
-    <input type="submit" value = "Submit File">
-  </form>
+<script>0</script>
+
+<div class = "main">
+
+  <div class = "file-folder">
+    <h2>Upload a file!</h2>
+    <form action="/upload" method = "POST" enctype="multipart/form-data">
+      <input type="file" id="myFile" name="uploaded_file">
+      <input type="submit" value = "Submit File">
+    </form>
+    
+    <h2>Create a folder!</h2>
+    <form action="/createFolder" method = "POST">
+      <input type="text" id="folderName" placeholder ="Enter a folder name!" name="folderName">
+      <input type = "submit" value ="Create Folder">
+    </form>
+    <% if(folders) { %>
+      <h2> Your current folders </h2>
+        <% for(folder of folders){ %>
+          <div class = "folder">
+            <div>
+            <h3> <%= folder.folder_name %> !!</h3>
+            <form action = "/viewFolder" method ="get"> 
+              <input type = "hidden" name = "folder_id" value = <%=folder.id  %> >
+              <input type="submit" value= "View Folder">
+            </form>
+            </div>
+            <ul class = files>
+              <% for (file of folder.files){ %>
+                <li> <%= file.file_name %> 
+                  <form action = "/removeFromFolder" method ="POST" > 
+                    <input type = "hidden" name = "file_id" value = <%= file.id %> >
+                    <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
+                    <input type="submit" value= "remove">
+                  </form>
+                  <form action = "/viewFile" method ="get"> 
+                    <input type = "hidden" name = "file_id" value = <%= file.id %> >
+                    <input type="submit" value= "view">
+                  </form>
+                  <form action = "/download" method ="get"> 
+                    <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
+                    <input type = "hidden" name = "file_id" value = <%= file.id %> >
+                    <input type="submit" value= "download">
+                  </form>
+                </li>   
+              <% } %>
+            </ul>
+          </div>
+        <% } %>
+    <% } %>  
+
+  </div>
+  
 
 
-
+<div class = files>
   <% if(files) { %>
     <h2> Your current files </h2>
-      <ul class = files>     
+      <ul>     
       <% for(file of files){ %>  
         <li><%= file.file_name %> 
           <form action ="/sendToFolder" method ="POST">
@@ -34,24 +81,26 @@
             </select>
             <input type="submit" value="Send to folder">
           </form>
+          <div class = "crudButtons">
           <form action = "/deleteFile" method ="POST"> 
             <input type = "hidden" name = "file_id" value = <%= file.id %> >
             <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
-            <input type="submit" value= "delete">
+            <input class ="crudSubmit" type="submit" value= "delete">
           </form>
           <form action = "/viewFile" method ="get"> 
             <input type = "hidden" name = "file_id" value = <%= file.id %> >
-            <input type="submit" value= "view">
+            <input class ="crudSubmit" type="submit" value= "view">
           </form>
           <form action = "/download" method ="get"> 
             <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
             <input type = "hidden" name = "file_id" value = <%= file.id %> >
-            <input type="submit" value= "download">
+            <input class ="crudSubmit" type="submit" value= "download">
           </form>
+          </div>
         </li> 
       <% } %>
       </ul>
- <% } %>
+  <% } %>
 
  <% if(fileFound) { %>
    <h2>Selected File</h2>
@@ -64,46 +113,9 @@
     <li>Date Created: <%= fileFound.date_created %></li>
    </ul>
  <% } %>
+</div>
 
- <h2>Create a folder!</h2>
- <form action="/createFolder" method = "POST">
-   <input type="text" id="folderName" placeholder ="Enter a folder name!" name="folderName">
-   <input type = "submit" value ="Create Folder">
- </form>
-
-  <% if(folders) { %>
-     <h2> Your current folders </h2>
-     <% for(folder of folders){ %>
-        <div class = "folder">
-          <div>
-          <h3> <%= folder.folder_name %> !!</h3>
-          <form action = "/viewFolder" method ="get"> 
-            <input type = "hidden" name = "folder_id" value = <%=folder.id  %> >
-            <input type="submit" value= "View Folder">
-          </form>
-          </div>
-          <ul class = files>
-            <% for (file of folder.files){ %>
-              <li> <%= file.file_name %> 
-                <form action = "/removeFromFolder" method ="POST" > 
-                  <input type = "hidden" name = "file_id" value = <%= file.id %> >
-                  <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
-                  <input type="submit" value= "remove">
-                </form>
-                <form action = "/viewFile" method ="get"> 
-                  <input type = "hidden" name = "file_id" value = <%= file.id %> >
-                  <input type="submit" value= "view">
-                </form>
-                <form action = "/download" method ="get"> 
-                  <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
-                  <input type="submit" value= "download">
-                </form>
-              </li>   
-            <% } %>
-          </ul>
-        </div>
-      <% } %>
-  <% } %>
-
+</div>
+  
 </body>
 </html>

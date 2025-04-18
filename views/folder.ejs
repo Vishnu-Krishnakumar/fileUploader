@@ -12,12 +12,16 @@
 <body>
 
   <script>0</script>
+  <div class = "main">
+  <div class = "file-folder">
   <h2>Folder: <%= folder.folder_name %></h2>
     <form action="/uploadInFolder" method = "POST" enctype= "multipart/form-data">
       <input type="file" id= "myFile" name= "uploaded_file" required>
       <input type = "hidden" name = "folders" value = <%= folder.id %> >
       <input type="submit" value = "Submit File">
     </form>
+  </div>
+  <div class ="files">  
   <% if(files) { %>
     <h2> Your current files </h2>          
       <% for(file of files){ %>
@@ -33,8 +37,9 @@
           </form>
         </li>
       </ul>  
+      <% } %>
   <% } %>
-
-  <% } %>
+  </div>
+</div>
 </body>
 </html>
