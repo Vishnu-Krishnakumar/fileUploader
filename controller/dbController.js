@@ -115,7 +115,7 @@ async function folderCreation(req,res){
   }
   const user = {
     id: req.user.id,
-    olderId: req.user.folderId,
+    folderId: req.user.folderId,
   }
   const found = await db.findFolder(folder);
 
@@ -239,6 +239,7 @@ async function deleteInFolder(req,res){
 async function deleteFile(req,res){
 
   const { data , error } = await supabase.storage.from("all-files").remove([req.body.file_name]);
+
   if(error){console.log(error)}
   const id = {
     file: req.body.file_id,
@@ -320,6 +321,23 @@ async function downloadFile(req,res){
   
 }
 
+async function deleteFolder (req,res){
+  const id = {
+    file: req.body.file_id,
+    folder: req.body.folder_id,
+    user: req.user.id,
+  }
+  const deleted = await db.deleteFolder(id);
+  const folders = await db.getFolders({id:req.user.id});
+  const files = await db.getFiles({id:req.user.id});
+  await res.render("upload",{
+    folders:folders,
+    files:files,
+    fileFound : null,
+    folderName: null,
+  })
+}
+
 module.exports ={
     userRegistration,
     fileUpload,
@@ -333,4 +351,5 @@ module.exports ={
     sendToThisFolder,
     deleteInFolder,
     downloadFile,
+    deleteFolder,
 }

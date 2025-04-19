@@ -106,7 +106,6 @@ async function addToFolder(id){
 }
 
 async function deleteFile(id){
-  console.log(id);
   const deleteFile = await prisma.files.delete({
     where:{
       id:(parseInt(id.file)),
@@ -115,7 +114,15 @@ async function deleteFile(id){
   });
 
 }
-
+async function deleteFolder(id){
+  const deletedFolder = await prisma.folders.delete({
+    where:{
+      id:(parseInt(id.folder)),
+      user_id: id.user,
+    },
+  });
+  return deletedFolder
+}
 async function deleteFromFolder(id){
   let folder = await prisma.folders.findFirst({
     where:{
@@ -166,5 +173,6 @@ module.exports = {
     viewFile,
     findFolderName,
     getFolderFiles,
+    deleteFolder,
 }
 

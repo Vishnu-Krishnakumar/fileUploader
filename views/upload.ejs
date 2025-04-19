@@ -36,24 +36,31 @@
               <input type = "hidden" name = "folder_id" value = <%=folder.id  %> >
               <input type="submit" value= "View Folder">
             </form>
+            <form action = "/deleteFolder" method ="POST"> 
+              <input type = "hidden" name = "folder_id" value = <%=folder.id  %> >
+              <input type = "hidden" name = "folder_name" value = <%=folder.folder_name%> >
+              <input type="submit" value= "Remove Folder">
+            </form>
             </div>
-            <ul class = files>
+            <ul class = "filesList">
               <% for (file of folder.files){ %>
-                <li> <%= file.file_name %> 
+                <li> <%= file.file_name %>
+                  <div class = "crudButtons"> 
                   <form action = "/removeFromFolder" method ="POST" > 
                     <input type = "hidden" name = "file_id" value = <%= file.id %> >
                     <input type = "hidden" name = "folder_id" value = <%= file.folder_id %> >
-                    <input type="submit" value= "remove">
+                    <input class ="crudSubmit" type="submit" value= "remove">
                   </form>
                   <form action = "/viewFile" method ="get"> 
                     <input type = "hidden" name = "file_id" value = <%= file.id %> >
-                    <input type="submit" value= "view">
+                    <input class ="crudSubmit" type="submit" value= "view">
                   </form>
                   <form action = "/download" method ="get"> 
                     <input type = "hidden" name = "file_name" value = <%= file.file_name %> >
                     <input type = "hidden" name = "file_id" value = <%= file.id %> >
-                    <input type="submit" value= "download">
+                    <input class ="crudSubmit" type="submit" value= "download">
                   </form>
+                  </div>
                 </li>   
               <% } %>
             </ul>
